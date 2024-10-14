@@ -130,11 +130,11 @@ print(f"GVSU Women's Soccer({results['Outcome']}) Vs. {results['Opponent']} on {
 
 # Below is code to display team game data from every date on the dates list:
 dates_of_games = ["09/05/2024","09/07/2024","09/13/2024","09/15/2024","09/20/2024","09/22/2024","09/27/2024","09/29/2024","10/04/2024","10/06/2024","10/11/2024"]
-""" 
-for d in dates:
+"""
+for d in dates_of_games:
     r = get_game_data_by_date(html_soup, d)
     print(f'-_--_--_--_--_--_--_--_--_--_--_--_--_--_--_--_--_--_--_--_--_--_--_-')
-    print(f"GVSU Women's Soccer({r['Outcome']}) Vs. {r['Opponent']} on {date_to_check}:\n\n | Score: {r['Score']}  |\n | Goal Scorers: {r['Goal Scorers']} |\n | Attendance: {r['Attendance']} |\n | Overall Record: {r['Overall Record']} |\n | Conference Record: {r['Conference Record']} |\n")
+    print(f"GVSU Women's Soccer({r['Outcome']}) Vs. {r['Opponent']} on {d}:\n\n | Score: {r['Score']}  |\n | Goal Scorers: {r['Goal Scorers']} |\n | Attendance: {r['Attendance']} |\n | Overall Record: {r['Overall Record']} |\n | Conference Record: {r['Conference Record']} |\n")
 
     o = get_offensive_stats_by_date(html_soup, d)
     print(f"Goals: {o['Goals']}, Assists: {o['Assists']}, Points: {o['Points']}")
