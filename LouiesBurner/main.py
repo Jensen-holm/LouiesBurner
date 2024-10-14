@@ -59,7 +59,7 @@ def get_offensive_stats_by_date(soup, date: str):
                 game_data['Assists'] = row.find('td', {'data-label': 'A'}).text.strip()
                 game_data['Points'] = row.find('td', {'data-label': 'PTS'}).text.strip()
                 game_data['Shots'] = row.find('td', {'data-label': 'SH'}).text.strip()
-                game_data['Shot%'] = float(row.find('td', {'data-label': 'Shot%'}).text.strip())*100
+                game_data['Shot%'] = round(float(row.find('td', {'data-label': 'Shot%'}).text.strip())*100, 1)
                 game_data['SOG'] = row.find('td', {'data-label': 'SOG'}).text.strip()
                 game_data['SOG%'] = row.find('td', {'data-label': 'SOG%'}).text.strip()
                 game_data['YC'] = row.find('td', {'data-label': 'YC-RC'}).text.strip().split("-")[0]
