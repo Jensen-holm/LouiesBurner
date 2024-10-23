@@ -1,13 +1,13 @@
 from tweepy import API, Client, OAuth1UserHandler
 import os
 
-CLIENT_ID = os.environ.get("LOUIES_CLIENT_ID")
-CLIENT_SECRET = os.environ.get("LOUIES_CLIENT_SECRET")
-BEARER_TOKEN = os.environ.get("LOUIES_BEARER_TOKEN")
-ACCESS_TOKEN = os.environ.get("LOUIES_ACCESS_TOKEN")
-ACCESS_TOKEN_SECRET = os.environ.get("LOUIES_ACCESS_TOKEN_SECRET")
-CONSUMER_KEY = os.environ.get("LOUIES_API_KEY")
-CONSUMER_SECRET = os.environ.get("LOUIES_API_KEY_SECRET")
+CLIENT_ID = os.environ.get("CLIENT_ID")
+CLIENT_SECRET = os.environ.get("CLIENT_SECRET")
+BEARER_TOKEN = os.environ.get("BEARER_TOKEN")
+ACCESS_TOKEN = os.environ.get("ACCESS_TOKEN")
+ACCESS_TOKEN_SECRET = os.environ.get("ACCESS_TOKEN_SECRET")
+CONSUMER_KEY = os.environ.get("CONSUMER_KEY")
+CONSUMER_SECRET = os.environ.get("CONSUMER_SECRET")
 
 
 _auth = OAuth1UserHandler(
@@ -25,7 +25,3 @@ client = Client(
     access_token=ACCESS_TOKEN,
     access_token_secret=ACCESS_TOKEN_SECRET,
 )
-
-
-if __name__ == "__main__":
-    client.create_tweet(text="hello world!")
