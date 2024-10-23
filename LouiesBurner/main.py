@@ -113,6 +113,17 @@ def get_player_stats_by_name(soup, player_name):
             return {player_name: stats}
     return {}
 
+# In progress (may not be necessary)
+
+def get_matchup_history():
+    list = ["https://gvsulakers.com/sports/womens-soccer/opponent-history","https://gvsulakers.com/sports/womens-soccer/opponent-history?p=2","https://gvsulakers.com/sports/womens-soccer/opponent-history?p=3","https://gvsulakers.com/sports/womens-soccer/opponent-history?p=4","https://gvsulakers.com/sports/womens-soccer/opponent-history?p=5","https://gvsulakers.com/sports/womens-soccer/opponent-history?p=6"]
+    soups = []
+    for URL in list:
+        page = requests.get(URL)
+        html_soup = BeautifulSoup(page.text, "html.parser")
+        soups.append(html_soup)
+    ...
+
 # Example usage of get_offensive_stats_by:
 """
 print(get_offensive_stats_by_date(html_soup, "10/11/2024"))
@@ -124,9 +135,9 @@ print(get_player_stats_by_name(html_soup, "Bearden, Kennedy"))
 """
 
 # Game Data Visualisation Print Extra
-"""
-print(f"GVSU Women's Soccer({results['Outcome']}) Vs. {results['Opponent']} on {date_to_check}:\n\n | Score: {results['Score']}  |\n | Goal Scorers: {results['Goal Scorers']} |\n | Attendance: {results['Attendance']} |\n | Overall Record: {results['Overall Record']} |\n | Conference Record: {results['Conference Record']} |\n")
-"""
+
+results = get_game_data_by_date(html_soup, "09/07/2024")
+print(f"GVSU Women's Soccer({results['Outcome']}) Vs. {results['Opponent']} on 09/07/2024:\n\n | Score: {results['Score']}  |\n | Goal Scorers: {results['Goal Scorers']} |\n | Attendance: {results['Attendance']} |\n | Overall Record: {results['Overall Record']} |\n | Conference Record: {results['Conference Record']} |\n")
 
 # Below is code to display team game data from every date on the dates list:
 dates_of_games = ["09/05/2024","09/07/2024","09/13/2024","09/15/2024","09/20/2024","09/22/2024","09/27/2024","09/29/2024","10/04/2024","10/06/2024","10/11/2024"]
