@@ -1,8 +1,9 @@
-__all__ = ["ROOT_URL", "GVSU_ROOT_URL"]
+__all__ = ["ROOT_URL", "VOLLEYBALL_ROOT_URL"]
 
 
-ROOT_URL: str = "https://{school}.com/sports"
+ROOT_URL: str = "https://gvsulakers.com/sports/{sport}"
 
-GVSU_ROOT_URL: str = ROOT_URL.format(school="gvsulakers")
+SOCCER_ROOT_URL: str = ROOT_URL.format(sport="womens-soccer")
 
+VALID_PAGES: set[str] = {"stats", "roster", "schedule", "coaches"}
 VALID_SPORTS: set[str] = {"football", "baseball"}
