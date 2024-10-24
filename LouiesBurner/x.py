@@ -1,9 +1,27 @@
-from x_api import client
-import datetime
-from main import get_game_data_by_date, html_soup
+from tweepy import API, Client, OAuth1UserHandler
+import os
 
-results = get_game_data_by_date(html_soup, "09/07/2024")
-tweet_text = f"GVSU Women's Soccer({results['Outcome']}) Vs. {results['Opponent']} on 09/07/2024:\n\n | Score: {results['Score']}  |\n | Goal Scorers: {results['Goal Scorers']} |\n | Attendance: {results['Attendance']} |\n | Overall Record: {results['Overall Record']} |\n | Conference Record: {results['Conference Record']} |\n"
+CLIENT_ID = os.environ.get("CLIENT_ID")
+CLIENT_SECRET = os.environ.get("CLIENT_SECRET")
+BEARER_TOKEN = os.environ.get("BEARER_TOKEN")
+ACCESS_TOKEN = os.environ.get("ACCESS_TOKEN")
+ACCESS_TOKEN_SECRET = os.environ.get("ACCESS_TOKEN_SECRET")
+CONSUMER_KEY = os.environ.get("CONSUMER_KEY")
+CONSUMER_SECRET = os.environ.get("CONSUMER_SECRET")
 
 
-client.create_tweet(text=tweet_text)
+_auth = OAuth1UserHandler(
+    consumer_key=CONSUMER_KEY,
+    consumer_secret=CONSUMER_SECRET,
+    access_token=ACCESS_TOKEN,
+    access_token_secret=ACCESS_TOKEN_SECRET,
+)
+
+api = API(_auth)
+
+client = Client(
+    consumer_key=CONSUMER_KEY,
+    consumer_secret=CONSUMER_SECRET,
+    access_token=ACCESS_TOKEN,
+    access_token_secret=ACCESS_TOKEN_SECRET,
+)
