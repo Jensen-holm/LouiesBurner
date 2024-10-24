@@ -4,7 +4,17 @@ from bs4 import BeautifulSoup
 # Gets game-to-game data by date
 
 def get_game_data_by_date(soup: BeautifulSoup, date: str="MM/DD/YYYY"):
-    game_data = {}          #results dict
+    '''
+    Returns dictionary of GVSU general game data for the given date
+
+            Parameters:
+                    soup (BeautifulSoup): parsed html
+                    date (str): date in the form "MM/DD/YYYY"
+
+            Returns:
+                    game_data (dict): dictionary of general game data
+    '''
+    game_data = {}  #results dict
 
     game_results_section = soup.find('section', id='game-results')  
 
@@ -32,9 +42,18 @@ def get_game_data_by_date(soup: BeautifulSoup, date: str="MM/DD/YYYY"):
         return game_data
     return "No data found for this date."
 
-# Gets team stats by date
 
 def get_offensive_stats_by_date(soup: BeautifulSoup, date: str = "MM/DD/YYYY"):
+    '''
+    Returns a dictionary of GVSU offensive team stats for the given date 
+
+            Parameters:
+                    soup (BeautifulSoup): parsed html
+                    date (str): date in the form "MM/DD/YYYY"
+
+            Returns:
+                    game_data (dict): dictionary of offensive game data
+    '''
     game_data = {}  # results dict
     game_off_results_section = soup.find('section', id='game-game-our-offensive')
     
@@ -68,9 +87,17 @@ def get_offensive_stats_by_date(soup: BeautifulSoup, date: str = "MM/DD/YYYY"):
 
     return "No data found for this date."
 
-# Gets list of player names
 
 def get_player_names(soup):
+    '''
+    Returns a list of GVSU players who played in the season
+
+            Parameters:
+                    soup (BeautifulSoup): parsed html
+
+            Returns:
+                    player_names (list): list of player names
+    '''
     player_names = [] #results container, will contain a list of names 
     offensive_section = soup.find('section', id='individual-overall-offensive')
     rows = offensive_section.find_all('tr')
@@ -82,9 +109,18 @@ def get_player_names(soup):
     
     return player_names
 
-# Gets individual player stats by name
 
 def get_player_stats_by_name(soup: BeautifulSoup, player_name: str = "LastName, FirstName"):
+    '''
+    Returns a dictionary of GVSU player stats for the season
+
+            Parameters:
+                    soup (BeautifulSoup): parsed html
+                    player_name (str): player name 
+
+            Returns:
+                    player_stats (dict): dictionary of player stats
+    '''
     offensive_section = soup.find('section', id='individual-overall-offensive')
     
     for row in offensive_section.find_all('tr'):
@@ -106,7 +142,8 @@ def get_player_stats_by_name(soup: BeautifulSoup, player_name: str = "LastName, 
                 'GW': int(row.find('td', {'data-label': 'GW'}).text),
                 'PG-PA': row.find('td', {'data-label': 'PG-PA'}).text
             }
-            return {player_name: stats}
+            player_stats = {player_name: stats}
+            return player_stats
     return {}
 
 # Example usage of get_offensive_stats_by:
@@ -130,9 +167,9 @@ tweet_text = f"GVSU Women's Soccer({results['Outcome']}) Vs. {results['Opponent'
 """
 
 # Below is code to display team game data from every date on the dates list:
-
-dates_of_games = ["09/05/2024","09/07/2024","09/13/2024","09/15/2024","09/20/2024","09/22/2024","09/27/2024","09/29/2024","10/04/2024","10/06/2024","10/11/2024"]
 """
+dates_of_games = ["09/05/2024","09/07/2024","09/13/2024","09/15/2024","09/20/2024","09/22/2024","09/27/2024","09/29/2024","10/04/2024","10/06/2024","10/11/2024"]
+
 for d in dates_of_games:
     r = get_game_data_by_date(html_soup, d)
     print(f'-_--_--_--_--_--_--_--_--_--_--_--_--_--_--_--_--_--_--_--_--_--_--_-')
