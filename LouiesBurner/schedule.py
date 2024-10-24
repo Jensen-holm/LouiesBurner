@@ -1,57 +1,42 @@
 
 import requests
 from bs4 import BeautifulSoup
+from datetime import datetime
 
-URL = "https://gvsulakers.com/sports/womens-soccer/schedule"
-page = requests.get(URL)
-html_soup = BeautifulSoup(page.text, "html.parser")
+def get_womens_soccer_schedule(soup: BeautifulSoup):
+    '''
+    Returns list of dates of all GVSU women's soccer games 
 
+            Parameters:
+                    soup (BeautifulSoup): parsed html
 
-game_details = html_soup.find_all('div', class_='sidearm-schedule-game-details x-small-3 columns')
+            Returns:
+                    dates_list (list): list of dates for all GVSU women's soccer games  
+    '''
+    dates_list = []
+    rows = soup.find_all('tr', class_='sidearm-schedule-game')
 
-# Check if any matching elements are found
-if game_details:
-    for detail in game_details:
-        print(detail.text.strip())  # Print the text inside the <div>
-else:
-    print("No matching elements found.")
-
-"""
-"""
-
-flex_elements = html_soup.find_all('div', class_='flex flex-justify-between')
-
-# Check if any matching elements are found
-if flex_elements:
-    for element in flex_elements:
-        print(element.text.strip())  # Print the text inside the <div>
-else:
-    print("No matching elements found.")
-
-"""
-"""
+    for row in rows:
+        date_td = row.find('td')  #first <td> in the row
+        if date_td:
+            game_date = date_td.text.strip() 
+            parsed_date = datetime.strptime(game_date.split('(')[0].strip(), '%B %d, %Y')
+            formatted_date = parsed_date.strftime('%m/%d/%Y')  # Convert to MM/DD/YYYY format
+            dates_list.append(formatted_date)
+    return dates_list
 
 
-opponent_text_elements = html_soup.find_all('div', class_='sidearm-schedule-game-opponent-text')
+def find_most_recent_past_date(dates):
+    '''
+    Returns date of most recent GVSU women's soccer game
 
-# Check if any matching elements are found
-if opponent_text_elements:
-    for element in opponent_text_elements:
-        print(element.text.strip())  # Print the text inside the <div>
-else:
-    print("No matching elements found.")
+            Parameters:
+                    dates (list): list of dates from all women's GVSU soccer game
 
-"""
-"""
+            Returns:
+                    date (str): date of most recent game 
+    '''
+    current_date = datetime.now()
+    past_dates = [datetime.strptime(date, "%m/%d/%Y") for date in dates if datetime.strptime(date, "%m/%d/%Y") < current_date]
+    return max(past_dates).strftime("%m/%d/%Y")
 
-game_row_elements = html_soup.find_all('div', class_='sidearm-schedule-game-row sidearm-schedule-game-row-desktop row flex flex-align-center')
-
-# Check if any matching elements are found
-if game_row_elements:
-    for element in game_row_elements:
-        # Example: Get the opponent text within this row
-        opponent_text = element.find('div', class_='sidearm-schedule-game-opponent-text').text.strip()
-        date_text = element.find('span').text.strip()  # Get the date
-        print(f"Opponent: {opponent_text}, Date: {date_text}")  # Print both the opponent and the date
-else:
-    print("No matching elements found.")
