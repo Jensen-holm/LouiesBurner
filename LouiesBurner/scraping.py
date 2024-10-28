@@ -3,8 +3,9 @@ from bs4 import BeautifulSoup
 
 # Gets game-to-game data by date
 
-def get_game_data_by_date(soup: BeautifulSoup, date: str="MM/DD/YYYY"):
-    '''
+
+def get_game_data_by_date(soup: BeautifulSoup, date: str = "MM/DD/YYYY"):
+    """
     Returns dictionary of GVSU general game data for the given date
 
             Parameters:
@@ -13,39 +14,57 @@ def get_game_data_by_date(soup: BeautifulSoup, date: str="MM/DD/YYYY"):
 
             Returns:
                     game_data (dict): dictionary of general game data
-    '''
-    game_data = {}  #results dict
+    """
+    game_data = {}  # results dict
 
-    game_results_section = soup.find('section', id='game-results')  
+    game_results_section = soup.find("section", id="game-results")
 
     if game_results_section:
-        rows = game_results_section.find_all('tr')
+        rows = game_results_section.find_all("tr")
 
         for row in rows:
-            date_cell = row.find('td')
+            date_cell = row.find("td")
             if date_cell and date_cell.text.strip() == date:
 
-                game_data['Opponent'] = row.find_all('td')[1].find('a').text.strip()  #opponent is in the second <td> matches <a>
-                game_data['Outcome'] = row.find_all('td')[2].text.strip()
-                game_data['Attendance'] = row.find('td', {'data-label': 'Attend'}).text.strip()
-                goals_cell = row.find('td', {'data-label': 'Goals Scored [Assist]'})
+                game_data["Opponent"] = (
+                    row.find_all("td")[1].find("a").text.strip()
+                )  # opponent is in the second <td> matches <a>
+                game_data["Outcome"] = row.find_all("td")[2].text.strip()
+                game_data["Attendance"] = row.find(
+                    "td", {"data-label": "Attend"}
+                ).text.strip()
+                goals_cell = row.find("td", {"data-label": "Goals Scored [Assist]"})
 
                 if goals_cell:
                     scorers = []
-                    for scorer in goals_cell.stripped_strings:  # individual goal scorers
-                        scorers.append(scorer.split(' (')[0])   # discludes the total number of goals and the assister
-                    game_data['Goal Scorers'] = scorers  # list of goal scorers
+                    for (
+                        scorer
+                    ) in goals_cell.stripped_strings:  # individual goal scorers
+                        scorers.append(
+                            scorer.split(" (")[0]
+                        )  # discludes the total number of goals and the assister
+                    game_data["Goal Scorers"] = scorers  # list of goal scorers
 
-                game_data['Score']  = row.find('td', {'data-label': 'Score'}).text.strip()
-                game_data['Overall Record']  = row.find('td', {'data-label': 'Overall'}).text.strip().split(",")[0][1:]
-                game_data['Conference Record'] = row.find('td', {'data-label': 'Conference'}).text.strip()
+                game_data["Score"] = row.find(
+                    "td", {"data-label": "Score"}
+                ).text.strip()
+                game_data["Overall Record"] = (
+                    row.find("td", {"data-label": "Overall"})
+                    .text.strip()
+                    .split(",")[0][1:]
+                )
+                game_data["Conference Record"] = row.find(
+                    "td", {"data-label": "Conference"}
+                ).text.strip()
         return game_data
-    return "No data found for this date."
+
+    return {}
+    # return "No data found for this date."
 
 
 def get_offensive_stats_by_date(soup: BeautifulSoup, date: str = "MM/DD/YYYY"):
-    '''
-    Returns a dictionary of GVSU offensive team stats for the given date 
+    """
+    Returns a dictionary of GVSU offensive team stats for the given date
 
             Parameters:
                     soup (BeautifulSoup): parsed html
@@ -53,43 +72,57 @@ def get_offensive_stats_by_date(soup: BeautifulSoup, date: str = "MM/DD/YYYY"):
 
             Returns:
                     game_data (dict): dictionary of offensive game data
-    '''
+    """
     game_data = {}  # results dict
-    game_off_results_section = soup.find('section', id='game-game-our-offensive')
-    
+    game_off_results_section = soup.find("section", id="game-game-our-offensive")
+
     if game_off_results_section:
-        rows = game_off_results_section.find_all('tr')
-        
+        rows = game_off_results_section.find_all("tr")
+
         for row in rows:
-            date_cell = row.find('td')
+            date_cell = row.find("td")
             if date_cell and date_cell.text.strip() == date:
-                opponent_cell = row.find_all('td')[1]
-                game_data['Opponent'] = opponent_cell.get_text(strip=True)
-                if game_data['Opponent'][0] == 'a' and game_data['Opponent'][1] == 't':
-                    game_data['Opponent'] = game_data['Opponent'].split('at')[1] # removes the 'at' at the start of the opponent text.
-                if game_data['Opponent'][0] == 'v' and game_data['Opponent'][1] == 's':
-                    game_data['Opponent'] = game_data['Opponent'].split('vs')[1] # removes the 'vs' at the start of the opponent text.
-                game_data['Score'] = row.find('td', {'data-label': 'Score'}).text.strip()
-                game_data['Goals'] = row.find('td', {'data-label': 'G'}).text.strip()
-                game_data['Assists'] = row.find('td', {'data-label': 'A'}).text.strip()
-                game_data['Points'] = row.find('td', {'data-label': 'PTS'}).text.strip()
-                game_data['Shots'] = row.find('td', {'data-label': 'SH'}).text.strip()
-                game_data['Shot%'] = round(float(row.find('td', {'data-label': 'Shot%'}).text.strip())*100, 1)
-                game_data['SOG'] = row.find('td', {'data-label': 'SOG'}).text.strip()
-                game_data['SOG%'] = row.find('td', {'data-label': 'SOG%'}).text.strip()
-                game_data['YC'] = row.find('td', {'data-label': 'YC-RC'}).text.strip().split("-")[0]
-                game_data['RC'] = row.find('td', {'data-label': 'YC-RC'}).text.strip().split("-")[1]
-                game_data['GW'] = row.find('td', {'data-label': 'GW'}).text.strip()
-                game_data['PK-ATT'] = row.find('td', {'data-label': 'PK-ATT'}).text.strip()
-                game_data['Minutes'] = row.find_all('td')[-1].text.strip()
-                
+                opponent_cell = row.find_all("td")[1]
+                game_data["Opponent"] = opponent_cell.get_text(strip=True)
+                if game_data["Opponent"][0] == "a" and game_data["Opponent"][1] == "t":
+                    game_data["Opponent"] = game_data["Opponent"].split("at")[
+                        1
+                    ]  # removes the 'at' at the start of the opponent text.
+                if game_data["Opponent"][0] == "v" and game_data["Opponent"][1] == "s":
+                    game_data["Opponent"] = game_data["Opponent"].split("vs")[
+                        1
+                    ]  # removes the 'vs' at the start of the opponent text.
+                game_data["Score"] = row.find(
+                    "td", {"data-label": "Score"}
+                ).text.strip()
+                game_data["Goals"] = row.find("td", {"data-label": "G"}).text.strip()
+                game_data["Assists"] = row.find("td", {"data-label": "A"}).text.strip()
+                game_data["Points"] = row.find("td", {"data-label": "PTS"}).text.strip()
+                game_data["Shots"] = row.find("td", {"data-label": "SH"}).text.strip()
+                game_data["Shot%"] = round(
+                    float(row.find("td", {"data-label": "Shot%"}).text.strip()) * 100, 1
+                )
+                game_data["SOG"] = row.find("td", {"data-label": "SOG"}).text.strip()
+                game_data["SOG%"] = row.find("td", {"data-label": "SOG%"}).text.strip()
+                game_data["YC"] = (
+                    row.find("td", {"data-label": "YC-RC"}).text.strip().split("-")[0]
+                )
+                game_data["RC"] = (
+                    row.find("td", {"data-label": "YC-RC"}).text.strip().split("-")[1]
+                )
+                game_data["GW"] = row.find("td", {"data-label": "GW"}).text.strip()
+                game_data["PK-ATT"] = row.find(
+                    "td", {"data-label": "PK-ATT"}
+                ).text.strip()
+                game_data["Minutes"] = row.find_all("td")[-1].text.strip()
+
                 return game_data
 
     return "No data found for this date."
 
 
 def get_player_names(soup):
-    '''
+    """
     Returns a list of GVSU players who played in the season
 
             Parameters:
@@ -97,54 +130,65 @@ def get_player_names(soup):
 
             Returns:
                     player_names (list): list of player names
-    '''
-    player_names = [] #results container, will contain a list of names 
-    offensive_section = soup.find('section', id='individual-overall-offensive')
-    rows = offensive_section.find_all('tr')
-    
+    """
+    player_names = []  # results container, will contain a list of names
+    offensive_section = soup.find("section", id="individual-overall-offensive")
+    rows = offensive_section.find_all("tr")
+
     for row in rows:
-        name_cell = row.find('a')
+        name_cell = row.find("a")
         if name_cell:
             player_names.append(name_cell.text.strip())
-    
+
     return player_names
 
 
-def get_player_stats_by_name(soup: BeautifulSoup, player_name: str = "LastName, FirstName"):
-    '''
+def get_player_stats_by_name(
+    soup: BeautifulSoup, player_name: str = "LastName, FirstName"
+):
+    """
     Returns a dictionary of GVSU player stats for the season
 
             Parameters:
                     soup (BeautifulSoup): parsed html
-                    player_name (str): player name 
+                    player_name (str): player name
 
             Returns:
                     player_stats (dict): dictionary of player stats
-    '''
-    offensive_section = soup.find('section', id='individual-overall-offensive')
-    
-    for row in offensive_section.find_all('tr'):
-        name_cell = row.find('a')
+    """
+    offensive_section = soup.find("section", id="individual-overall-offensive")
+
+    for row in offensive_section.find_all("tr"):
+        name_cell = row.find("a")
         if name_cell and player_name in name_cell.text:
             stats = {
-                'GP': int(row.find('td', {'data-label': 'GP'}).text),
-                'GS': int(row.find('td', {'data-label': 'GS'}).text),
-                'MIN': int(row.find('td', {'data-label': 'MIN'}).text),
-                'G': int(row.find('td', {'data-label': 'G'}).text),
-                'A': int(row.find('td', {'data-label': 'A'}).text),
-                'PTS': int(row.find('td', {'data-label': 'PTS'}).text),
-                'SH': int(row.find('td', {'data-label': 'SH'}).text),
-                'SH%': round(float(row.find('td', {'data-label': 'SH%'}).text) * 100, 1),  # convert to percentage
-                'SOG': int(row.find('td', {'data-label': 'SOG'}).text),
-                'SOG%': round(float(row.find('td', {'data-label': 'SOG%'}).text) * 100, 1),  # convert to percentage
-                'YC': int(row.find('td', {'data-label': 'YC-RC'}).text.split('-')[0]),  # separate yellow card
-                'RC': int(row.find('td', {'data-label': 'YC-RC'}).text.split('-')[1]),  # separate red card
-                'GW': int(row.find('td', {'data-label': 'GW'}).text),
-                'PG-PA': row.find('td', {'data-label': 'PG-PA'}).text
+                "GP": int(row.find("td", {"data-label": "GP"}).text),
+                "GS": int(row.find("td", {"data-label": "GS"}).text),
+                "MIN": int(row.find("td", {"data-label": "MIN"}).text),
+                "G": int(row.find("td", {"data-label": "G"}).text),
+                "A": int(row.find("td", {"data-label": "A"}).text),
+                "PTS": int(row.find("td", {"data-label": "PTS"}).text),
+                "SH": int(row.find("td", {"data-label": "SH"}).text),
+                "SH%": round(
+                    float(row.find("td", {"data-label": "SH%"}).text) * 100, 1
+                ),  # convert to percentage
+                "SOG": int(row.find("td", {"data-label": "SOG"}).text),
+                "SOG%": round(
+                    float(row.find("td", {"data-label": "SOG%"}).text) * 100, 1
+                ),  # convert to percentage
+                "YC": int(
+                    row.find("td", {"data-label": "YC-RC"}).text.split("-")[0]
+                ),  # separate yellow card
+                "RC": int(
+                    row.find("td", {"data-label": "YC-RC"}).text.split("-")[1]
+                ),  # separate red card
+                "GW": int(row.find("td", {"data-label": "GW"}).text),
+                "PG-PA": row.find("td", {"data-label": "PG-PA"}).text,
             }
             player_stats = {player_name: stats}
             return player_stats
     return {}
+
 
 # Example usage of get_offensive_stats_by:
 """
@@ -161,7 +205,7 @@ print(get_player_stats_by_name(html_soup, "Bearden, Kennedy"))
 results = get_game_data_by_date(html_soup, "09/07/2024")
 """
 
-#Example tweet_text:
+# Example tweet_text:
 """
 tweet_text = f"GVSU Women's Soccer({results['Outcome']}) Vs. {results['Opponent']} on 09/07/2024:\n\n | Score: {results['Score']}  |\n | Goal Scorers: {results['Goal Scorers']} |\n | Attendance: {results['Attendance']} |\n | Overall Record: {results['Overall Record']} |\n | Conference Record: {results['Conference Record']} |\n"
 """
