@@ -1,6 +1,8 @@
 from tweepy import API, Client, OAuth1UserHandler
 import os
 
+__all__ = ["api", "client"]
+
 CLIENT_ID = os.environ.get("CLIENT_ID")
 CLIENT_SECRET = os.environ.get("CLIENT_SECRET")
 BEARER_TOKEN = os.environ.get("BEARER_TOKEN")

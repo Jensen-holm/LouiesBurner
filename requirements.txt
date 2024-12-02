@@ -2,3 +2,5 @@ beautifulsoup4==4.12.3
 pytest==8.3.3
 Requests==2.32.3
 tweepy==4.14.0
+pandas
+lxml
