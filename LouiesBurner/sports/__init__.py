@@ -5,3 +5,9 @@ from .sport import Sport
 SPORTS = {
     "baseball": Baseball,
 }
+
+__all__ = [
+    "SPORTS",
+    "Baseball",
+    "Sport",
+]
