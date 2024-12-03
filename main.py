@@ -5,45 +5,40 @@ from LouiesBurner.sports import SPORTS, Sport
 from LouiesBurner.x import client
 
 
-def main(sport: str, date: datetime.date) -> None:
+def main(
+    sport: str, date: datetime.date, _retries: int = 5, _retry_sleep_time: int = 2
+) -> None:
+    if not _retries:
+        return print("maximum retries reached, try again")
+
     sport_class = SPORTS.get(sport, None)
     assert sport_class is not None, f"Invalid sport '{sport}'"
-    assert isinstance(sport_class, type) and issubclass(sport_class, Sport)
+    assert issubclass(sport_class, Sport), f"Invalid sport '{sport}'"
 
-    # Create an instance of the sport class
     sport_obj = sport_class(year=date.year)
-
-    # Get season highs set on the previous day
     new_highs = sport_obj.get_season_highs_for_date(date)
+    prev_date = (date - datetime.timedelta(days=1)).strftime("%Y-%m-%d")
 
-    # Create and post tweets for grouped achievements
-    if new_highs:
-        print(
-            f"Posting tweets for season highs from {(date - datetime.timedelta(days=1)).strftime('%Y-%m-%d')}:"
-        )
+    if not new_highs:
+        return print(f"No {sport} szn highs were set on {prev_date}")
 
-        # Sort by player for grouping
-        new_highs.sort(key=lambda x: x["Player"])
+    new_highs.sort(key=lambda x: x["Player"])
+    tweets = []
+    for _, group in groupby(new_highs, key=lambda x: x["Player"]):
+        achievements = list(group)
+        tweet_txt = sport_obj.create_tweet_text(achievements)
+        tweets.append(tweet_txt)
+        try:
+            client.create_tweet(text=tweet_txt)
+            print("Tweet posted successfully!")
+            time.sleep(_retry_sleep_time)
+        except Exception as e:
+            print(f"Error posting tweet: {e}")
+            print(f"sleeping for {_retry_sleep_time}s")
+            time.sleep(_retry_sleep_time)
+            main(sport=sport, date=date, _retry_sleep_time=_retry_sleep_time - 1)
 
-        # Group by player and create tweets
-        for player, group in groupby(new_highs, key=lambda x: x["Player"]):
-            achievements = list(group)
-            tweet_text = sport_obj.create_tweet_text(achievements)
-            print(f"\nTweeting:\n{tweet_text}")
-            try:
-                client.create_tweet(text=tweet_text)
-                print("Tweet posted successfully!")
-                time.sleep(2)  # watch rate limits
-            except Exception as e:
-                print(f"Error posting tweet: {e}")
-                # If we hit rate limit, wait longer
-                if "429" in str(e):
-                    print("Rate limit hit, waiting 15 minutes...")
-                    time.sleep(900)
-    else:
-        print(
-            f"No {sport} season highs were set on {(date - datetime.timedelta(days=1)).strftime('%Y-%m-%d')}"
-        )
+    return print(f"New tweets created: {'\n\n'.join(tweets)}")
 
 
 if __name__ == "__main__":
