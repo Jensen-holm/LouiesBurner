@@ -62,7 +62,9 @@ class Sport(ABC):
                 for high in highs:
                     stat = high["Statistic"].lower()
                     achievements.append(f"{high['Value']} {stat}")
-                achievements_str = ", ".join(achievements[:-1]) + f" and {achievements[-1]}"
+                achievements_str = (
+                    ", ".join(achievements[:-1]) + f" and {achievements[-1]}"
+                )
                 multi_templates = [
                     "🔥 WHAT A GAME! 🔥\n{player} sets multiple season highs with {achievements} against {opponent}! #AnchorUp ⚓️",
                     "⚡️ {player} IS UNSTOPPABLE! ⚡️\nNew season highs: {achievements} vs {opponent}! #AnchorUp",

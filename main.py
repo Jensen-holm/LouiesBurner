@@ -33,7 +33,7 @@ def main(sport: str, date: datetime.date) -> None:
             try:
                 client.create_tweet(text=tweet_text)
                 print("Tweet posted successfully!")
-                time.sleep(2) # watch rate limits
+                time.sleep(2)  # watch rate limits
             except Exception as e:
                 print(f"Error posting tweet: {e}")
                 # If we hit rate limit, wait longer
