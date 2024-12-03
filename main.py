@@ -6,7 +6,10 @@ from LouiesBurner.x import client
 
 
 def main(
-    sport: str, date: datetime.date, _retries: int = 5, _retry_sleep_time: int = 2
+    sport: str,
+    date: datetime.date,
+    _retries: int = 5,
+    _retry_sleep_time: int = 2,
 ) -> None:
     if not _retries:
         return print("maximum retries reached, try again")
@@ -27,18 +30,23 @@ def main(
     for _, group in groupby(new_highs, key=lambda x: x["Player"]):
         achievements = list(group)
         tweet_txt = sport_obj.create_tweet_text(achievements)
-        tweets.append(tweet_txt)
         try:
             client.create_tweet(text=tweet_txt)
             print("Tweet posted successfully!")
+            tweets.append(tweet_txt)
             time.sleep(_retry_sleep_time)
         except Exception as e:
             print(f"Error posting tweet: {e}")
             print(f"sleeping for {_retry_sleep_time}s")
             time.sleep(_retry_sleep_time)
-            main(sport=sport, date=date, _retry_sleep_time=_retry_sleep_time - 1)
+            _ = main(
+                sport=sport,
+                date=date,
+                _retry_sleep_time=_retry_sleep_time,
+                _retries=_retries - 1,
+            )
 
-    return print(f"New tweets created: {'\n\n'.join(tweets)}")
+    return print(f"New tweets created:\n{'\n\n'.join(tweets)}")
 
 
 if __name__ == "__main__":
