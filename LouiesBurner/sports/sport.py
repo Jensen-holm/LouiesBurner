@@ -10,25 +10,34 @@ class Sport(ABC):
     _BASE_URL = "https://gvsulakers.com/sports/{sport}/stats/{year}"
     __slots__ = ["_year", "_url", "_szn_high_idxs", "_szn_high_df"]
 
+    def __init__(self, year: int, sport: str) -> None:
+        self._year = year
+        self._szn_high_df = None
+        self._url = self._BASE_URL.format(
+            year=year,
+            sport=sport,
+        )
+
     @property
-    @abstractmethod
     def year(self) -> int:
-        pass
+        return self._year
 
     @property
-    @abstractmethod
     def url(self) -> str:
-        pass
+        return self._url
 
     @property
-    @abstractmethod
     def season_high_idxs(self) -> list[int]:
-        pass
+        return self._szn_high_idxs
 
     @property
-    @abstractmethod
     def season_high_df(self) -> pd.DataFrame:
-        pass
+        if self._szn_high_df is None:
+            all_dfs = pd.read_html(self.url)
+            self._szn_high_df = pd.concat(
+                [df for n, df in enumerate(all_dfs) if n in self._szn_high_idxs]
+            )
+        return self._szn_high_df
 
     def create_tweet_text(self, highs: list[dict]) -> str:
         """

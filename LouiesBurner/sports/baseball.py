@@ -6,38 +6,29 @@ import pandas as pd
 from .sport import Sport
 
 
+# Skip negative stats
+negative_stats = [
+    "STRIKEOUTS",
+    "CAUGHT STEALING",
+    "HIT INTO DP",
+    "RUNS ALLOWED",
+    "EARNED RUNS",
+    "WALKS ALLOWED",
+    "HITS ALLOWED",
+    "DOUBLES ALLOWED",
+    "TRIPLES ALLOWED",
+    "HOME RUNS ALLOWED",
+    "WILD PITCHES",
+    "HIT BATTERS",
+]
+
+
 class Baseball(Sport):
     # these are individual box score season best indices
     _szn_high_idxs = [11, 12, 13]
 
     def __init__(self, year: int) -> None:
-        self._year = year
-        self._szn_high_df = None
-        self._url = self._BASE_URL.format(
-            sport="baseball",
-            year=year,
-        )
-
-    @property
-    def year(self) -> int:
-        return self._year
-
-    @property
-    def url(self) -> str:
-        return self._url
-
-    @property
-    def season_high_idxs(self) -> list[int]:
-        return self._szn_high_idxs
-
-    @property
-    def season_high_df(self) -> pd.DataFrame:
-        if self._szn_high_df is None:
-            all_dfs = pd.read_html(self.url)
-            self._szn_high_df = pd.concat(
-                [df for n, df in enumerate(all_dfs) if n in self.season_high_idxs]
-            )
-        return self._szn_high_df
+        super().__init__(year=year, sport="baseball")
 
     def _extract_date(self, opponent_str: str) -> Optional[datetime.date]:
         """Extract the date from an opponent string like 'Team Name (MM/DD/YYYY)'"""
@@ -49,21 +40,6 @@ class Baseball(Sport):
 
     def _should_tweet_stat(self, stat: str) -> bool:
         """Determine if a baseball statistic is interesting enough to tweet about."""
-        # Skip negative stats
-        negative_stats = [
-            "STRIKEOUTS",
-            "CAUGHT STEALING",
-            "HIT INTO DP",
-            "RUNS ALLOWED",
-            "EARNED RUNS",
-            "WALKS ALLOWED",
-            "HITS ALLOWED",
-            "DOUBLES ALLOWED",
-            "TRIPLES ALLOWED",
-            "HOME RUNS ALLOWED",
-            "WILD PITCHES",
-            "HIT BATTERS",
-        ]
         return stat.upper() not in negative_stats
 
     def _get_baseball_verb(self, stat: str) -> str:
