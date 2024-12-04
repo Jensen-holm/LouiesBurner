@@ -1,0 +1,49 @@
+name: Softball Season Highs Check
+'on':
+  schedule:
+  - cron: 0 12 28 9 *
+  - cron: 0 12 30 9 *
+  - cron: 0 12 7 10 *
+  - cron: 0 12 12 2 *
+  - cron: 0 12 21 2 *
+  - cron: 0 12 22 2 *
+  - cron: 0 12 23 2 *
+  - cron: 0 12 2 3 *
+  - cron: 0 12 15 3 *
+  - cron: 0 12 16 3 *
+  - cron: 0 12 22 3 *
+  - cron: 0 12 23 3 *
+  - cron: 0 12 27 3 *
+  - cron: 0 12 30 3 *
+  - cron: 0 12 31 3 *
+  - cron: 0 12 3 4 *
+  - cron: 0 12 6 4 *
+  - cron: 0 12 7 4 *
+  - cron: 0 12 10 4 *
+  - cron: 0 12 13 4 *
+  - cron: 0 12 14 4 *
+  - cron: 0 12 19 4 *
+  - cron: 0 12 20 4 *
+jobs:
+  check-season-highs:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.12'
+    - name: Install dependencies
+      run: 'python -m pip install --upgrade pip
+
+        pip install -r requirements.txt'
+    - name: Check for new season highs
+      run: python main.py -sport softball
+      env:
+        CLIENT_ID: ${{ secrets.CLIENT_ID }}
+        CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
+        BEARER_TOKEN: ${{ secrets.BEARER_TOKEN }}
+        ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+        ACCESS_TOKEN_SECRET: ${{ secrets.ACCESS_TOKEN_SECRET }}
+        CONSUMER_KEY: ${{ secrets.CONSUMER_KEY }}
+        CONSUMER_SECRET: ${{ secrets.CONSUMER_SECRET }}
