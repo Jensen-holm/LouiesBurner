@@ -15,8 +15,7 @@ negative_stats = [
 
 
 class Softball(Sport):
-    # Based on the provided data format, all stats are in one table
-    _szn_high_idxs = [11]  # We'll capture the entire table
+    _szn_high_idxs = [11]
 
     def __init__(self, year: int) -> None:
         super().__init__(year=year, sport="softball")
