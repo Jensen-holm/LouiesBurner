@@ -44,6 +44,7 @@ name: Baseball Season Highs Check
   - cron: 0 12 16 5 *
   - cron: 0 12 24 5 *
   - cron: 0 12 1 6 *
+  workflow_dispatch: null
 jobs:
   check-season-highs:
     runs-on: ubuntu-latest
