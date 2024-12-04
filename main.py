@@ -1,7 +1,7 @@
 import datetime
 import time
 from itertools import groupby
-from LouiesBurner.sports import SPORTS, Sport
+from LouiesBurner.sports import SPORTS
 from LouiesBurner.x import client
 
 
@@ -16,7 +16,6 @@ def main(
 
     sport_class = SPORTS.get(sport, None)
     assert sport_class is not None, f"Invalid sport '{sport}'"
-    assert issubclass(sport_class, Sport), f"Invalid sport '{sport}'"
 
     sport_obj = sport_class(year=date.year)
     new_highs = sport_obj.get_season_highs_for_date(date)
