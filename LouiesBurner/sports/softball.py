@@ -15,13 +15,45 @@ negative_stats = [
 
 
 class Softball(Sport):
+    """
+    Class for handling softball-specific statistics and tweet generation.
+
+    This class extends the base Sport class with softball-specific implementations
+    for processing season highs and creating engaging tweets.
+
+    Attributes
+    ----------
+    _szn_high_idxs : list[int]
+        Indices of season high tables in the scraped data
+    """
+
     _szn_high_idxs = [11]
 
     def __init__(self, year: int) -> None:
+        """
+        Initialize a Softball instance.
+
+        Parameters
+        ----------
+        year : int
+            The year for which to fetch softball statistics
+        """
         super().__init__(year=year, sport="softball")
 
     def _extract_date(self, opponent_str: str) -> Optional[datetime.date]:
-        """Extract the date from an opponent string like 'Team Name (MM/DD/YYYY)'"""
+        """
+        Extract the date from an opponent string.
+
+        Parameters
+        ----------
+        opponent_str : str
+            String containing opponent name and date in format 'Team Name (MM/DD/YYYY)'
+
+        Returns
+        -------
+        Optional[datetime.date]
+            The extracted date if found, None otherwise
+        """
         date_match = re.search(r"\((\d{1,2}/\d{1,2}/\d{4})\)", opponent_str)
         if date_match:
             date_str = date_match.group(1)
@@ -29,11 +61,43 @@ class Softball(Sport):
         return None
 
     def _should_tweet_stat(self, stat: str) -> bool:
-        """Determine if a softball statistic is interesting enough to tweet about."""
+        """
+        Determine if a softball statistic is interesting enough to tweet about.
+
+        Parameters
+        ----------
+        stat : str
+            The name of the statistic to evaluate
+
+        Returns
+        -------
+        bool
+            True if the stat should be tweeted, False if it's in negative_stats
+        """
         return stat.upper() not in negative_stats
 
     def _get_softball_verb(self, stat: str) -> str:
-        """Get an appropriate verb for a softball statistic."""
+        """
+        Get an appropriate verb for a softball statistic.
+
+        Parameters
+        ----------
+        stat : str
+            The name of the statistic
+
+        Returns
+        -------
+        str
+            An appropriate verb for the given statistic
+
+        Notes
+        -----
+        Returns specific verbs for different types of stats:
+        - "finished with" for at bats
+        - "racked up" for hits, runs scored, RBIs
+        - "crushed" for home runs, doubles, triples
+        - etc.
+        """
         stat = stat.lower()
         if stat in ["at bats"]:
             return "finished with"
@@ -52,7 +116,29 @@ class Softball(Sport):
         return "recorded"
 
     def create_tweet_text(self, highs: list[dict]) -> str:
-        """Create an engaging tweet about softball season high achievement(s)."""
+        """
+        Create an engaging tweet about softball season high achievement(s).
+
+        Parameters
+        ----------
+        highs : list[dict]
+            List of dictionaries containing achievement information.
+            Each dictionary should contain:
+            - Player: str, name of the player
+            - Value: Any, the value achieved
+            - Statistic: str, type of statistic
+            - Opponent: str, opposing team
+
+        Returns
+        -------
+        str
+            Formatted tweet text describing the achievement(s)
+
+        Notes
+        -----
+        Uses softball-specific templates and hashtags (#GLVCsb).
+        Handles both single and multiple achievements by the same player.
+        """
         player = highs[0]["Player"]
         assert isinstance(player, str)
 
@@ -99,7 +185,34 @@ class Softball(Sport):
         return f"🥎 New season high! {high['Player']} {self._get_softball_verb(high['Statistic'])} {high['Value']} {high['Statistic'].lower()} against {re.sub(r'\s*\([^)]*\)', '', high['Opponent'])}! #AnchorUp #GLVCsb"
 
     def get_season_highs_for_date(self, date: datetime.date) -> List[Dict]:
-        """Get softball season highs that were set/tied on the day before the given date."""
+        """
+        Get softball season highs that were set/tied on the day before the given date.
+
+        Parameters
+        ----------
+        date : datetime.date
+            The date to check for season highs (will check previous day)
+
+        Returns
+        -------
+        List[Dict]
+            List of dictionaries containing season high information:
+            - Statistic : str
+                Name of the statistic
+            - Value : Any
+                Value achieved
+            - Player : str
+                Player who achieved it
+            - Opponent : str
+                Opponent it was achieved against
+            - Date : datetime.date
+                Date it was achieved
+
+        Notes
+        -----
+        Filters out negative statistics (defined in negative_stats list)
+        and only includes achievements from the previous day.
+        """
         # Get the previous day's date
         prev_date = date - datetime.timedelta(days=1)
 

@@ -24,14 +24,46 @@ negative_stats = [
 
 
 class Baseball(Sport):
+    """
+    Class for handling baseball-specific statistics and tweet generation.
+
+    This class extends the base Sport class with baseball-specific implementations
+    for processing season highs and creating engaging tweets.
+
+    Attributes
+    ----------
+    _szn_high_idxs : list[int]
+        Indices of individual box score season best tables in the scraped data
+    """
+
     # these are individual box score season best indices
     _szn_high_idxs = [11, 12, 13]
 
     def __init__(self, year: int) -> None:
+        """
+        Initialize a Baseball instance.
+
+        Parameters
+        ----------
+        year : int
+            The year for which to fetch baseball statistics
+        """
         super().__init__(year=year, sport="baseball")
 
     def _extract_date(self, opponent_str: str) -> Optional[datetime.date]:
-        """Extract the date from an opponent string like 'Team Name (MM/DD/YYYY)'"""
+        """
+        Extract the date from an opponent string.
+
+        Parameters
+        ----------
+        opponent_str : str
+            String containing opponent name and date in format 'Team Name (MM/DD/YYYY)'
+
+        Returns
+        -------
+        Optional[datetime.date]
+            The extracted date if found, None otherwise
+        """
         date_match = re.search(r"\((\d{1,2}/\d{1,2}/\d{4})\)", opponent_str)
         if date_match:
             date_str = date_match.group(1)
@@ -39,11 +71,43 @@ class Baseball(Sport):
         return None
 
     def _should_tweet_stat(self, stat: str) -> bool:
-        """Determine if a baseball statistic is interesting enough to tweet about."""
+        """
+        Determine if a baseball statistic is interesting enough to tweet about.
+
+        Parameters
+        ----------
+        stat : str
+            The name of the statistic to evaluate
+
+        Returns
+        -------
+        bool
+            True if the stat should be tweeted, False if it's in negative_stats
+        """
         return stat.upper() not in negative_stats
 
     def _get_baseball_verb(self, stat: str) -> str:
-        """Get an appropriate verb for a baseball statistic."""
+        """
+        Get an appropriate verb for a baseball statistic.
+
+        Parameters
+        ----------
+        stat : str
+            The name of the statistic
+
+        Returns
+        -------
+        str
+            An appropriate verb for the given statistic
+
+        Notes
+        -----
+        Returns specific verbs for different types of stats:
+        - "racked up" for strikeouts, hits, runs scored, RBIs
+        - "crushed" for home runs, doubles, triples
+        - "swiped" for stolen bases
+        - "dominated for" for innings pitched
+        """
         stat = stat.lower()
         if stat in ["strikeouts", "hits", "runs scored", "rbis"]:
             return "racked up"
@@ -56,7 +120,29 @@ class Baseball(Sport):
         return "recorded"
 
     def create_tweet_text(self, highs: list[dict]) -> str:
-        """Create an engaging tweet about baseball season high achievement(s)."""
+        """
+        Create an engaging tweet about baseball season high achievement(s).
+
+        Parameters
+        ----------
+        highs : list[dict]
+            List of dictionaries containing achievement information.
+            Each dictionary should contain:
+            - Player: str, name of the player
+            - Value: Any, the value achieved
+            - Statistic: str, type of statistic
+            - Opponent: str, opposing team
+
+        Returns
+        -------
+        str
+            Formatted tweet text describing the achievement(s)
+
+        Notes
+        -----
+        Uses baseball-specific templates and hashtags (#GLVCbsb).
+        Handles both single and multiple achievements by the same player.
+        """
         player = highs[0]["Player"]
         assert isinstance(player, str)
 
@@ -103,7 +189,34 @@ class Baseball(Sport):
         return f"🎯 New season high! {high['Player']} {self._get_baseball_verb(high['Statistic'])} {high['Value']} {high['Statistic'].lower()} against {re.sub(r'\s*\([^)]*\)', '', high['Opponent'])}! #AnchorUp #GLVCbsb"
 
     def get_season_highs_for_date(self, date: datetime.date) -> List[Dict]:
-        """Get baseball season highs that were set/tied on the day before the given date."""
+        """
+        Get baseball season highs that were set/tied on the day before the given date.
+
+        Parameters
+        ----------
+        date : datetime.date
+            The date to check for season highs (will check previous day)
+
+        Returns
+        -------
+        List[Dict]
+            List of dictionaries containing season high information:
+            - Statistic : str
+                Name of the statistic
+            - Value : Any
+                Value achieved
+            - Player : str
+                Player who achieved it
+            - Opponent : str
+                Opponent it was achieved against
+            - Date : datetime.date
+                Date it was achieved
+
+        Notes
+        -----
+        Filters out negative statistics (defined in negative_stats list)
+        and only includes achievements from the previous day.
+        """
         # Get the previous day's date
         prev_date = date - datetime.timedelta(days=1)
 

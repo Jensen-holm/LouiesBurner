@@ -30,7 +30,10 @@ def generate_cron_schedule(game_dates):
 def create_workflow_file(name, sport, cron_expressions):
     workflow = {
         "name": f"{name} Season Highs Check",
-        "on": {"schedule": [{"cron": expr} for expr in cron_expressions], "workflow_dispatch": None},
+        "on": {
+            "schedule": [{"cron": expr} for expr in cron_expressions],
+            "workflow_dispatch": None,
+        },
         "jobs": {
             "check-season-highs": {
                 "runs-on": "ubuntu-latest",

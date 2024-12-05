@@ -11,6 +11,34 @@ def main(
     _retries: int = 5,
     _retry_sleep_time: int = 2,
 ) -> None:
+    """
+    Process and tweet season highs for a specified sport and date.
+
+    Parameters
+    ----------
+    sport : str
+        The name of the sport to process. Must be one of the keys in SPORTS dictionary.
+    date : datetime.date
+        The date to check for season highs. Will check the previous day's data.
+    _retries : int, optional
+        Number of retry attempts if tweet posting fails, by default 5.
+    _retry_sleep_time : int, optional
+        Time in seconds to sleep between retries, by default 2.
+
+    Returns
+    -------
+    None
+        Prints success/failure messages and posted tweets.
+
+    Notes
+    -----
+    The function performs the following steps:
+    1. Validates the sport and creates appropriate sport object
+    2. Gets season highs for the specified date
+    3. Groups achievements by player
+    4. Creates and posts tweets for each player's achievements
+    5. Handles posting failures with retries
+    """
     if not _retries:
         return print("maximum retries reached, try again")
 
