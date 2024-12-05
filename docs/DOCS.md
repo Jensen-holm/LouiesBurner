@@ -39,6 +39,11 @@ Abstract base class defining the interface for sport-specific implementations:
 - `create_tweet_text()`: Generate formatted tweet content
 - Abstract methods for sport-specific logic
 
+Function Relationships:
+- `get_season_highs_for_date()` depends on sport-specific implementations of abstract methods for data processing
+- `create_tweet_text()` utilizes the data gathered by `get_season_highs_for_date()` to format the output
+- Both methods rely on utility functions from `utils.py` for common operations
+
 ### Sport Implementations
 Each sport (Baseball, Softball) extends the Sport base class with specific implementations for:
 - Date extraction from opponent strings
@@ -46,11 +51,22 @@ Each sport (Baseball, Softball) extends the Sport base class with specific imple
 - Season high statistics processing
 - Sport-specific verbs and statistics
 
-### Schedule Generation (`scripts/generate_game_schedules.py`)
+Function Relationships:
+- Sport-specific implementations override abstract methods from the base Sport class
+- These implementations interact with `scraping.py` functions to gather game data
+- Tweet generation methods coordinate with `x.py` for posting to Twitter/X
+- All sport implementations use common utilities from `utils.py`
+
+### Workflow Schedule Generation (`scripts/generate_game_schedules.py`)
 Generates GitHub Actions workflow files based on game schedules:
 - Parses CSV schedule files
 - Generates cron expressions for automated checks
 - Creates sport-specific workflow YAML files
+
+Function Relationships:
+- Schedule parsing functions work with CSV files in the schedules/ directory
+- Generated workflows interact with `main.py` for execution
+- Uses utility functions from `utils.py` for date handling and file operations
 
 ### Main Script (`main.py`)
 Core execution script supporting multiple sports:
@@ -58,6 +74,12 @@ Core execution script supporting multiple sports:
 - Season highs processing and tweet generation
 - Retry mechanism for failed tweet attempts
 - Grouping of achievements by player
+
+Function Relationships:
+- Coordinates between sport implementations and Twitter/X posting functionality
+- Uses schedule handling from `schedule.py` to determine game dates
+- Integrates with `x.py` for social media posting
+- Leverages utility functions from `utils.py` for common operations
 
 ## GitHub Actions Workflows
 
