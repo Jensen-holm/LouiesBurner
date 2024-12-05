@@ -1,58 +1,75 @@
-# GVSU Women's Soccer Stats Bot
+# LouiesBurner
 
-An automated Twitter/X bot that posts updates about Grand Valley State University women's soccer games. The bot scrapes game statistics from the GVSU Lakers website and posts detailed game summaries to Twitter/X.
+A Twitter/X bot system for posting sports statistics and updates for Grand Valley State University athletics. The bot supports multiple sports, scraping game statistics from the GVSU Lakers website and posting detailed game summaries and season highs to Twitter/X.
 
 ## Project Structure
 
 ```
 LouiesBurner/
 ├── __init__.py
-├── schedule.py      # Game schedule handling
-├── scraping.py     # Web scraping functionality
-├── utils.py        # Common utilities and constants
-└── x.py            # Twitter/X API integration
+├── sports/              # Sport-specific implementations
+│   ├── __init__.py
+│   ├── baseball.py     # Baseball-specific logic
+│   ├── softball.py     # Softball-specific logic
+│   └── sport.py        # Abstract base class for sports
+├── samplePosts.txt     # Example post formats
+├── schedule.py         # Game schedule handling
+├── scraping.py        # Web scraping functionality
+├── utils.py           # Common utilities and constants
+└── x.py               # Twitter/X API integration
+
+schedules/              # CSV schedule files
+├── bsbl_25_schedule.csv
+└── softball_25_schedule.csv
+
+scripts/                # Utility scripts
+└── generate_game_schedules.py
+
+tests/                  # Test suite
+├── __init__.py
+└── test_schedule.py
 ```
 
 ## Core Components
 
-### Schedule Management (`schedule.py`)
-- `get_womens_soccer_schedule()`: Extracts game dates from GVSU's website
-- `find_most_recent_past_date()`: Determines the most recent game date
+### Sport Base Class (`sports/sport.py`)
+Abstract base class defining the interface for sport-specific implementations:
+- `__init__(year: int, sport: str)`: Initialize sport with year and name
+- `get_season_highs_for_date()`: Retrieve season highs for a specific date
+- `create_tweet_text()`: Generate formatted tweet content
+- Abstract methods for sport-specific logic
 
-### Web Scraping (`scraping.py`)
-- `get_game_data_by_date()`: Retrieves general game statistics
-- `get_offensive_stats_by_date()`: Fetches offensive team statistics
-- `get_player_names()`: Lists all players from the season
-- `get_player_stats_by_name()`: Gets individual player statistics
+### Sport Implementations
+Each sport (Baseball, Softball) extends the Sport base class with specific implementations for:
+- Date extraction from opponent strings
+- Tweet text generation
+- Season high statistics processing
+- Sport-specific verbs and statistics
 
-### Twitter Integration (`x.py`)
-Handles Twitter/X API authentication and posting using the Tweepy library.
+### Schedule Generation (`scripts/generate_game_schedules.py`)
+Generates GitHub Actions workflow files based on game schedules:
+- Parses CSV schedule files
+- Generates cron expressions for automated checks
+- Creates sport-specific workflow YAML files
 
-### Utilities (`utils.py`)
-Contains constants and common URL patterns for the GVSU athletics website.
+### Main Script (`main.py`)
+Core execution script supporting multiple sports:
+- Command-line interface for sport selection
+- Season highs processing and tweet generation
+- Retry mechanism for failed tweet attempts
+- Grouping of achievements by player
 
-## GitHub Actions Workflow
+## GitHub Actions Workflows
 
-The project includes an automated workflow (`womens_soccer.yml`) that can be manually triggered to post game updates:
+The project uses dynamically generated workflows for each sport, created by `generate_game_schedules.py`. Each workflow:
 
-```yaml
-name: womens_soccer
-
-on:
-  workflow_dispatch: # manual trigger specification
-
-jobs:
-  run-script:
-    runs-on: ubuntu-latest
-    steps:
-    - Uses GitHub's checkout action
-    - Sets up Python 3.12
-    - Installs dependencies
-    - Runs the main script with required Twitter/X API credentials
-```
+- Runs automatically based on game schedule
+- Can be manually triggered
+- Checks for season highs from the previous day's games
+- Posts achievements to Twitter/X
 
 ### Required Secrets
-The following secrets must be configured in your GitHub repository:
+Configure these secrets in your GitHub repository:
 - `CLIENT_ID`
 - `CLIENT_SECRET`
 - `BEARER_TOKEN`
@@ -72,142 +89,60 @@ The following secrets must be configured in your GitHub repository:
    pip install -r requirements.txt
    ```
 3. Configure Twitter/X API credentials as environment variables
-4. For GitHub Actions:
-   - Go to your repository's Settings > Secrets and variables > Actions
-   - Add all required Twitter/X API credentials as secrets
+4. Generate workflow files:
+   ```bash
+   python scripts/generate_game_schedules.py
+   ```
 
 ## Usage
 
 ### Local Execution
-Run the main script:
+Run the main script with specific sport and date:
 ```bash
-python wmns_soccer.py
+python main.py -sport baseball -date 2024-03-15
 ```
 
+Available arguments:
+- `-sport`: Sport to process (choices: baseball, softball)
+- `-date`: Date to check in ISO format (YYYY-MM-DD)
+
 ### GitHub Actions
-1. Navigate to the Actions tab in your repository
-2. Select the "womens_soccer" workflow
-3. Click "Run workflow"
+1. Automatic execution based on game schedules
+2. Manual trigger:
+   - Navigate to Actions tab
+   - Select sport-specific workflow
+   - Click "Run workflow"
 
 ## Output Format
 
-The bot generates tweets with the following information:
-- Game outcome
-- Opponent
-- Date
-- Score
-- Goal scorers
-- Overall record
-- Conference record
-- Attendance
+The bot generates sport-specific tweets containing:
+- Player name
+- Achievement date
+- Season high statistics
+- Sport-specific formatting
 
-Example tweet format:
+Example baseball tweet:
 ```
-GVSU Women's Soccer(W) Vs. [Opponent] MM/DD/YYYY
-
-| Score: 2-1
-| Goal Scorers: 
-        Player 1
-        Player 2
-| Overall Record: 15-1-2
-| Conference Record: 8-0-1
-
-| Fans in Attendance: 1234
+💪 BEAST MODE: K. Nott 💪
+Dominates with 3.0 walks against Indianapolis! #AnchorUp ⚓️
 ```
 
 ## Dependencies
 - beautifulsoup4: Web scraping
 - requests: HTTP requests
 - tweepy: Twitter/X API integration
+- pandas: Data processing
+- pyyaml: Workflow file generation
 
-## Function Documentation
+## Testing
 
-### schedule.py
+Run the test suite:
+```bash
+python -m pytest tests/
+```
 
-#### `get_womens_soccer_schedule(soup: BeautifulSoup)`
-Returns a list of dates for all GVSU women's soccer games.
-- Parameters:
-  - `soup`: BeautifulSoup object of parsed HTML
-- Returns:
-  - List of dates in MM/DD/YYYY format
-
-#### `find_most_recent_past_date(dates)`
-Finds the most recent past game date.
-- Parameters:
-  - `dates`: List of game dates
-- Returns:
-  - Most recent past game date in MM/DD/YYYY format
-
-### scraping.py
-
-#### `get_game_data_by_date(soup: BeautifulSoup, date: str)`
-Retrieves game data for a specific date.
-- Parameters:
-  - `soup`: BeautifulSoup object of parsed HTML
-  - `date`: Date in MM/DD/YYYY format
-- Returns:
-  - Dictionary containing:
-    - Opponent
-    - Outcome
-    - Attendance
-    - Goal Scorers (list)
-    - Score
-    - Overall Record
-    - Conference Record
-
-#### `get_offensive_stats_by_date(soup: BeautifulSoup, date: str)`
-Retrieves offensive statistics for a specific game.
-- Parameters:
-  - `soup`: BeautifulSoup object of parsed HTML
-  - `date`: Date in MM/DD/YYYY format
-- Returns:
-  - Dictionary containing offensive statistics including:
-    - Goals
-    - Assists
-    - Points
-    - Shots
-    - Shot percentage
-    - Shots on goal
-    - Yellow/Red cards
-    - Game-winning goals
-    - Penalty kicks
-    - Minutes played
-
-#### `get_player_names(soup: BeautifulSoup)`
-Retrieves a list of all players who played in the season.
-- Parameters:
-  - `soup`: BeautifulSoup object of parsed HTML
-- Returns:
-  - List of player names
-
-#### `get_player_stats_by_name(soup: BeautifulSoup, player_name: str)`
-Retrieves season statistics for a specific player.
-- Parameters:
-  - `soup`: BeautifulSoup object of parsed HTML
-  - `player_name`: Player's name in "LastName, FirstName" format
-- Returns:
-  - Dictionary containing player's season statistics including:
-    - Games played/started
-    - Minutes played
-    - Goals/Assists/Points
-    - Shots/Shot percentage
-    - Cards
-    - Game-winning goals
-    - Penalty kicks
-
-### x.py
-Handles Twitter/X API authentication and posting. Uses environment variables for secure credential management:
-- CLIENT_ID
-- CLIENT_SECRET
-- BEARER_TOKEN
-- ACCESS_TOKEN
-- ACCESS_TOKEN_SECRET
-- CONSUMER_KEY
-- CONSUMER_SECRET
-
-### utils.py
-Defines constants used throughout the project:
-- ROOT_URL: Base URL for GVSU sports pages
-- VOLLEYBALL_ROOT_URL: URL for women's volleyball
-- VALID_PAGES: Set of valid page types
-- VALID_SPORTS: Set of supported sports
+Tests cover:
+- Schedule parsing
+- Date handling
+- Sport-specific implementations
+- Tweet text generation

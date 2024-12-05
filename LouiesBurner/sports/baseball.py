@@ -1,3 +1,5 @@
+"""Baseball module for handling baseball-specific statistics and tweet generation."""
+
 import datetime
 import re
 import random

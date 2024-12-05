@@ -1,3 +1,5 @@
+"""Softball module for handling softball-specific statistics and tweet generation."""
+
 import datetime
 import re
 import random
@@ -147,7 +149,7 @@ class Softball(Sport):
                 high = highs[0]
                 single_templates = [
                     "🥎 SEASON HIGH ALERT! 🥎\n{player} just {verb} {value} {stat_type} against {opponent}! #AnchorUp ⚓️",
-                    "🔥 {player} is ON FIRE! 🔥\nJust set a season high with {value} {stat_type} vs {opponent}! #AnshorUp ⚓️",
+                    "🔥 {player} is ON FIRE! 🔥\nJust set a season high with {value} {stat_type} vs {opponent}! #AnchorUp ⚓️",
                     "⚡️ RECORD BREAKER ⚡️\n{player} leads the way with {value} {stat_type} against {opponent}! #AnchorUp ⚓️",
                     "👀 Look what {player} just did!\nNew season high: {value} {stat_type} vs {opponent}! #AnchorUp ⚓️",
                     "💪 BEAST MODE: {player} 💪\nDominates with {value} {stat_type} against {opponent}! #AnchorUp ⚓️",

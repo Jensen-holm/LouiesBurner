@@ -31,27 +31,6 @@
             <h2>API Documentation</h2>
                 <ul class="memberlist">
             <li>
-                    <a class="variable" href="#CLIENT_ID">CLIENT_ID</a>
-            </li>
-            <li>
-                    <a class="variable" href="#CLIENT_SECRET">CLIENT_SECRET</a>
-            </li>
-            <li>
-                    <a class="variable" href="#BEARER_TOKEN">BEARER_TOKEN</a>
-            </li>
-            <li>
-                    <a class="variable" href="#ACCESS_TOKEN">ACCESS_TOKEN</a>
-            </li>
-            <li>
-                    <a class="variable" href="#ACCESS_TOKEN_SECRET">ACCESS_TOKEN_SECRET</a>
-            </li>
-            <li>
-                    <a class="variable" href="#CONSUMER_KEY">CONSUMER_KEY</a>
-            </li>
-            <li>
-                    <a class="variable" href="#CONSUMER_SECRET">CONSUMER_SECRET</a>
-            </li>
-            <li>
                     <a class="variable" href="#api">api</a>
             </li>
             <li>
@@ -81,118 +60,36 @@
                         <div class="pdoc-code codehilite"><pre><span></span><span id="L-1"><a href="#L-1"><span class="linenos"> 1</span></a><span class="kn">from</span> <span class="nn">tweepy</span> <span class="kn">import</span> <span class="n">API</span><span class="p">,</span> <span class="n">Client</span><span class="p">,</span> <span class="n">OAuth1UserHandler</span>
 </span><span id="L-2"><a href="#L-2"><span class="linenos"> 2</span></a><span class="kn">import</span> <span class="nn">os</span>
 </span><span id="L-3"><a href="#L-3"><span class="linenos"> 3</span></a>
-</span><span id="L-4"><a href="#L-4"><span class="linenos"> 4</span></a><span class="n">CLIENT_ID</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;CLIENT_ID&quot;</span><span class="p">)</span>
-</span><span id="L-5"><a href="#L-5"><span class="linenos"> 5</span></a><span class="n">CLIENT_SECRET</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;CLIENT_SECRET&quot;</span><span class="p">)</span>
-</span><span id="L-6"><a href="#L-6"><span class="linenos"> 6</span></a><span class="n">BEARER_TOKEN</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;BEARER_TOKEN&quot;</span><span class="p">)</span>
-</span><span id="L-7"><a href="#L-7"><span class="linenos"> 7</span></a><span class="n">ACCESS_TOKEN</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;ACCESS_TOKEN&quot;</span><span class="p">)</span>
-</span><span id="L-8"><a href="#L-8"><span class="linenos"> 8</span></a><span class="n">ACCESS_TOKEN_SECRET</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;ACCESS_TOKEN_SECRET&quot;</span><span class="p">)</span>
-</span><span id="L-9"><a href="#L-9"><span class="linenos"> 9</span></a><span class="n">CONSUMER_KEY</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;CONSUMER_KEY&quot;</span><span class="p">)</span>
-</span><span id="L-10"><a href="#L-10"><span class="linenos">10</span></a><span class="n">CONSUMER_SECRET</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;CONSUMER_SECRET&quot;</span><span class="p">)</span>
-</span><span id="L-11"><a href="#L-11"><span class="linenos">11</span></a>
-</span><span id="L-12"><a href="#L-12"><span class="linenos">12</span></a>
-</span><span id="L-13"><a href="#L-13"><span class="linenos">13</span></a><span class="n">_auth</span> <span class="o">=</span> <span class="n">OAuth1UserHandler</span><span class="p">(</span>
-</span><span id="L-14"><a href="#L-14"><span class="linenos">14</span></a>    <span class="n">consumer_key</span><span class="o">=</span><span class="n">CONSUMER_KEY</span><span class="p">,</span>
-</span><span id="L-15"><a href="#L-15"><span class="linenos">15</span></a>    <span class="n">consumer_secret</span><span class="o">=</span><span class="n">CONSUMER_SECRET</span><span class="p">,</span>
-</span><span id="L-16"><a href="#L-16"><span class="linenos">16</span></a>    <span class="n">access_token</span><span class="o">=</span><span class="n">ACCESS_TOKEN</span><span class="p">,</span>
-</span><span id="L-17"><a href="#L-17"><span class="linenos">17</span></a>    <span class="n">access_token_secret</span><span class="o">=</span><span class="n">ACCESS_TOKEN_SECRET</span><span class="p">,</span>
-</span><span id="L-18"><a href="#L-18"><span class="linenos">18</span></a><span class="p">)</span>
-</span><span id="L-19"><a href="#L-19"><span class="linenos">19</span></a>
-</span><span id="L-20"><a href="#L-20"><span class="linenos">20</span></a><span class="n">api</span> <span class="o">=</span> <span class="n">API</span><span class="p">(</span><span class="n">_auth</span><span class="p">)</span>
+</span><span id="L-4"><a href="#L-4"><span class="linenos"> 4</span></a><span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;api&quot;</span><span class="p">,</span> <span class="s2">&quot;client&quot;</span><span class="p">]</span>
+</span><span id="L-5"><a href="#L-5"><span class="linenos"> 5</span></a>
+</span><span id="L-6"><a href="#L-6"><span class="linenos"> 6</span></a><span class="n">CLIENT_ID</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;CLIENT_ID&quot;</span><span class="p">)</span>
+</span><span id="L-7"><a href="#L-7"><span class="linenos"> 7</span></a><span class="n">CLIENT_SECRET</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;CLIENT_SECRET&quot;</span><span class="p">)</span>
+</span><span id="L-8"><a href="#L-8"><span class="linenos"> 8</span></a><span class="n">BEARER_TOKEN</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;BEARER_TOKEN&quot;</span><span class="p">)</span>
+</span><span id="L-9"><a href="#L-9"><span class="linenos"> 9</span></a><span class="n">ACCESS_TOKEN</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;ACCESS_TOKEN&quot;</span><span class="p">)</span>
+</span><span id="L-10"><a href="#L-10"><span class="linenos">10</span></a><span class="n">ACCESS_TOKEN_SECRET</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;ACCESS_TOKEN_SECRET&quot;</span><span class="p">)</span>
+</span><span id="L-11"><a href="#L-11"><span class="linenos">11</span></a><span class="n">CONSUMER_KEY</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;CONSUMER_KEY&quot;</span><span class="p">)</span>
+</span><span id="L-12"><a href="#L-12"><span class="linenos">12</span></a><span class="n">CONSUMER_SECRET</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;CONSUMER_SECRET&quot;</span><span class="p">)</span>
+</span><span id="L-13"><a href="#L-13"><span class="linenos">13</span></a>
+</span><span id="L-14"><a href="#L-14"><span class="linenos">14</span></a>
+</span><span id="L-15"><a href="#L-15"><span class="linenos">15</span></a><span class="n">_auth</span> <span class="o">=</span> <span class="n">OAuth1UserHandler</span><span class="p">(</span>
+</span><span id="L-16"><a href="#L-16"><span class="linenos">16</span></a>    <span class="n">consumer_key</span><span class="o">=</span><span class="n">CONSUMER_KEY</span><span class="p">,</span>
+</span><span id="L-17"><a href="#L-17"><span class="linenos">17</span></a>    <span class="n">consumer_secret</span><span class="o">=</span><span class="n">CONSUMER_SECRET</span><span class="p">,</span>
+</span><span id="L-18"><a href="#L-18"><span class="linenos">18</span></a>    <span class="n">access_token</span><span class="o">=</span><span class="n">ACCESS_TOKEN</span><span class="p">,</span>
+</span><span id="L-19"><a href="#L-19"><span class="linenos">19</span></a>    <span class="n">access_token_secret</span><span class="o">=</span><span class="n">ACCESS_TOKEN_SECRET</span><span class="p">,</span>
+</span><span id="L-20"><a href="#L-20"><span class="linenos">20</span></a><span class="p">)</span>
 </span><span id="L-21"><a href="#L-21"><span class="linenos">21</span></a>
-</span><span id="L-22"><a href="#L-22"><span class="linenos">22</span></a><span class="n">client</span> <span class="o">=</span> <span class="n">Client</span><span class="p">(</span>
-</span><span id="L-23"><a href="#L-23"><span class="linenos">23</span></a>    <span class="n">consumer_key</span><span class="o">=</span><span class="n">CONSUMER_KEY</span><span class="p">,</span>
-</span><span id="L-24"><a href="#L-24"><span class="linenos">24</span></a>    <span class="n">consumer_secret</span><span class="o">=</span><span class="n">CONSUMER_SECRET</span><span class="p">,</span>
-</span><span id="L-25"><a href="#L-25"><span class="linenos">25</span></a>    <span class="n">access_token</span><span class="o">=</span><span class="n">ACCESS_TOKEN</span><span class="p">,</span>
-</span><span id="L-26"><a href="#L-26"><span class="linenos">26</span></a>    <span class="n">access_token_secret</span><span class="o">=</span><span class="n">ACCESS_TOKEN_SECRET</span><span class="p">,</span>
-</span><span id="L-27"><a href="#L-27"><span class="linenos">27</span></a><span class="p">)</span>
+</span><span id="L-22"><a href="#L-22"><span class="linenos">22</span></a><span class="n">api</span> <span class="o">=</span> <span class="n">API</span><span class="p">(</span><span class="n">_auth</span><span class="p">)</span>
+</span><span id="L-23"><a href="#L-23"><span class="linenos">23</span></a>
+</span><span id="L-24"><a href="#L-24"><span class="linenos">24</span></a><span class="n">client</span> <span class="o">=</span> <span class="n">Client</span><span class="p">(</span>
+</span><span id="L-25"><a href="#L-25"><span class="linenos">25</span></a>    <span class="n">consumer_key</span><span class="o">=</span><span class="n">CONSUMER_KEY</span><span class="p">,</span>
+</span><span id="L-26"><a href="#L-26"><span class="linenos">26</span></a>    <span class="n">consumer_secret</span><span class="o">=</span><span class="n">CONSUMER_SECRET</span><span class="p">,</span>
+</span><span id="L-27"><a href="#L-27"><span class="linenos">27</span></a>    <span class="n">access_token</span><span class="o">=</span><span class="n">ACCESS_TOKEN</span><span class="p">,</span>
+</span><span id="L-28"><a href="#L-28"><span class="linenos">28</span></a>    <span class="n">access_token_secret</span><span class="o">=</span><span class="n">ACCESS_TOKEN_SECRET</span><span class="p">,</span>
+</span><span id="L-29"><a href="#L-29"><span class="linenos">29</span></a><span class="p">)</span>
 </span></pre></div>
 
 
             </section>
-                <section id="CLIENT_ID">
-                    <div class="attr variable">
-            <span class="name">CLIENT_ID</span>        =
-<span class="default_value">None</span>
-
-        
-    </div>
-    <a class="headerlink" href="#CLIENT_ID"></a>
-    
-    
-
-                </section>
-                <section id="CLIENT_SECRET">
-                    <div class="attr variable">
-            <span class="name">CLIENT_SECRET</span>        =
-<span class="default_value">None</span>
-
-        
-    </div>
-    <a class="headerlink" href="#CLIENT_SECRET"></a>
-    
-    
-
-                </section>
-                <section id="BEARER_TOKEN">
-                    <div class="attr variable">
-            <span class="name">BEARER_TOKEN</span>        =
-<span class="default_value">$BEARER_TOKEN</span>
-
-        
-    </div>
-    <a class="headerlink" href="#BEARER_TOKEN"></a>
-    
-    
-
-                </section>
-                <section id="ACCESS_TOKEN">
-                    <div class="attr variable">
-            <span class="name">ACCESS_TOKEN</span>        =
-<span class="default_value">$ACCESS_TOKEN</span>
-
-        
-    </div>
-    <a class="headerlink" href="#ACCESS_TOKEN"></a>
-    
-    
-
-                </section>
-                <section id="ACCESS_TOKEN_SECRET">
-                    <div class="attr variable">
-            <span class="name">ACCESS_TOKEN_SECRET</span>        =
-<span class="default_value">$ACCESS_TOKEN_SECRET</span>
-
-        
-    </div>
-    <a class="headerlink" href="#ACCESS_TOKEN_SECRET"></a>
-    
-    
-
-                </section>
-                <section id="CONSUMER_KEY">
-                    <div class="attr variable">
-            <span class="name">CONSUMER_KEY</span>        =
-<span class="default_value">$CONSUMER_KEY</span>
-
-        
-    </div>
-    <a class="headerlink" href="#CONSUMER_KEY"></a>
-    
-    
-
-                </section>
-                <section id="CONSUMER_SECRET">
-                    <div class="attr variable">
-            <span class="name">CONSUMER_SECRET</span>        =
-<span class="default_value">$CONSUMER_SECRET</span>
-
-        
-    </div>
-    <a class="headerlink" href="#CONSUMER_SECRET"></a>
-    
-    
-
-                </section>
                 <section id="api">
                     <div class="attr variable">
             <span class="name">api</span>        =
