@@ -153,9 +153,9 @@ class Baseball(Sport):
                 high = highs[0]
                 single_templates = [
                     "🚨 SEASON HIGH ALERT! 🚨\n{player} just {verb} {stat_type} with {value} against {opponent}! #AnchorUp ⚓️",
-                    "🔥 {player} is ON FIRE! 🔥\nJust set a season high with {value} {stat_type} vs {opponent}! #GLVCbsb ⚓️",
+                    "🔥 {player} is ON FIRE! 🔥\nJust set a season high with {value} {stat_type} vs {opponent}! #AnchorUp ⚓️",
                     "⚡️ RECORD BREAKER ⚡️\n{player} leads the way with {value} {stat_type} against {opponent}! #AnchorUp ⚓️",
-                    "👀 Look what {player} just did!\nNew season high: {value} {stat_type} vs {opponent}! #GLVCbsb ⚓️",
+                    "👀 Look what {player} just did!\nNew season high: {value} {stat_type} vs {opponent}! #AnchorUp⚓️",
                     "💪 BEAST MODE: {player} 💪\nDominates with {value} {stat_type} against {opponent}! #AnchorUp ⚓️",
                 ]
 
@@ -176,9 +176,9 @@ class Baseball(Sport):
                     ", ".join(achievements[:-1]) + f" and {achievements[-1]}"
                 )
                 multi_templates = [
-                    "🔥 WHAT A GAME! 🔥\n{player} sets multiple season highs with {achievements} against {opponent}! #AnchorUp #GLVCbsb ⚓️",
+                    "🔥 WHAT A GAME! 🔥\n{player} sets multiple season highs with {achievements} against {opponent}! #AnchorUp",
                     "⚡️ {player} IS UNSTOPPABLE! ⚡️\nNew season highs: {achievements} vs {opponent}! #GLVCbsb",
-                    "💪 DOMINANT PERFORMANCE 💪\n{player} sets new highs with {achievements} against {opponent}! #AnchorUp #GLVCbsb",
+                    "💪 DOMINANT PERFORMANCE 💪\n{player} sets new highs with {achievements} against {opponent}! #AnchorUp",
                 ]
                 return random.choice(multi_templates).format(
                     player=player,
